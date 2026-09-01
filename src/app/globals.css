@@ -1,0 +1,423 @@
+@import "tailwindcss";
+
+/* กติกา FILE_SAFETY: คลัง Delete/ และ MoveFile/ เก็บ "โค้ดเก่า" ไว้ 60 วัน
+   Tailwind v4 สแกนไฟล์เองอัตโนมัติ ถ้าไม่กันไว้ คลาสของโค้ดที่ตายแล้วจะถูกคอมไพล์เข้า CSS จริง
+   (เครื่องมือ build ตัวเดียวที่ตอนแรกลืมกัน — tsc/jest/eslint กันไว้ในไฟล์ config ของตัวเองแล้ว) */
+@source not "../../Delete";
+@source not "../../MoveFile";
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   LUMLON · 24.7 Rain Fall — ระบบดีไซน์ฐาน (L7-1/B0)
+   ───────────────────────────────────────────────────────────────────────────
+   SSOT ของสี  : D:\AirZpot Code\AirZpot\docs\brand\README.md §2
+                 + docs/brand/lumlon-247-rainfall/LUMLON_247_RainFall_Color_Spec.html §B/C/G
+   ปิดหนี้      : ชุด "Fresh Leaf" (lime/forest/เขียว-ดำ) ตกไปแล้วตั้งแต่เปลี่ยนแบรนด์เป็น LUMLON
+                 29 ก.ค. 2026 — ไฟล์นี้คือการย้ายมาชุดจริงตามที่ docs/brand/README.md §3 ข้อ 1 ค้างไว้
+   กติกาบังคับ  : **จอใหม่ทุกจอตั้งแต่ Sprint L7-1 เป็นต้นไป (จอเงิน จอสมาชิก จอ alerts)
+                 เกิดบนโทเคน/คลาสในไฟล์นี้เท่านั้น — ห้าม hardcode ค่าสี** (docs/31 §4 L7-1/B0)
+
+   🎨 อัตลักษณ์: ตัว L สีมรกต + หยดฝนสีฟ้า ⇒ emerald = การกระทำหลัก · sky = ข้อมูล/ลิงก์/สถานะรอง
+
+   ⚖️ กติกาคอนทราสต์ (คำนวณจริง ตรึงด้วยเทส src/app/__tests__/designTokens.test.ts):
+     • brand (#059669) = 3.77:1 บนขาว ⇒ **ห้ามวางตัวอักษรขาวบน brand** และห้ามใช้เป็นสีตัวอักษร
+       ใช้ได้เฉพาะพื้นปุ่มที่ตัวอักษรเป็นสีเข้ม · ไอคอน/เส้นขนาดใหญ่ (ผ่านเกณฑ์ UI 3:1)
+     • ตัวอักษรสีแบรนด์บนพื้นสว่าง + พื้นทึบที่มีตัวอักษรขาว = brand-strong (#036647 · 7.01:1 AAA)
+     • accent (#3FA9F5) = 2.56:1 บนขาว ⇒ **ตกแต่ง/ไล่เฉดเท่านั้น** — ลิงก์/ไอคอนที่สื่อความหมายใช้
+       accent-strong (#2B73A7 · 5.11:1 AA)
+     • คู่สีที่ไม่มีในตารางของเทส = ยังไม่ผ่านการตรวจ ห้ามใช้กับข้อความ
+
+   🌙 โหมดมืด: โทเคนครบแล้ว แต่ **เปิดด้วย `data-theme="dark"` บน <html> เท่านั้น**
+       ⛔ เจตนาไม่ผูกกับ `prefers-color-scheme` — จอที่มีอยู่วันนี้เขียนมาแบบสว่างล้วนและยัง
+          hardcode สีอยู่หลายจุด ถ้าสลับอัตโนมัติตามเครื่องผู้ใช้จะได้จอครึ่งมืดครึ่งสว่างทันที
+          การเปิดสวิตช์จริงเป็นงานรอบ redesign L7-3 (ตอนนั้นค่อยไล่เก็บจุด hardcode ให้ครบก่อน)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  color-scheme: light;
+  --background: #F6FAF9; /* = paper */
+  --foreground: #0F2740; /* = ink (navy) */
+}
+
+@theme {
+  /* ─── แบรนด์ · emerald (ตัว L) ─────────────────────────────────────────── */
+  --color-brand: #059669;        /* L โหมดสว่าง · พื้นปุ่ม/ไอคอน (UI 3.77:1) — ห้ามใส่ตัวอักษรขาว */
+  --color-brand-light: #4BB393;  /* emerald-400 · ตกแต่ง/ไล่เฉด/ตัวอักษรบนพื้นเข้ม */
+  --color-brand-hover: #048059;  /* emerald-600 · hover ของปุ่มพื้น (ข้อความบนขาว 4.96:1 AA) */
+  --color-brand-strong: #036647; /* emerald-700 · พื้นทึบ+ตัวอักษรขาว และตัวอักษรแบรนด์บนขาว (7.01:1 AAA) */
+  --color-brand-dark: #034E37;   /* emerald-800 · คอนทราสต์สูงสุด */
+  --color-on-brand: #FFFFFF;     /* สีตัวอักษร/ไอคอนที่วางบน brand-strong */
+
+  /* ramp เต็ม (ตรงกับสเปก §G — ห้ามคิดค่าเอง) */
+  --color-brand-50: #F0F9F6;
+  --color-brand-100: #E1F2ED;
+  --color-brand-200: #BEE4D8;
+  --color-brand-300: #8ED0BC;
+  --color-brand-400: #4BB393;
+  --color-brand-500: #059669;   /* = brand */
+  --color-brand-600: #048059;   /* = brand-hover */
+  --color-brand-700: #036647;   /* = brand-strong */
+  --color-brand-800: #034E37;   /* = brand-dark */
+  --color-brand-900: #023928;
+
+  /* ─── สีเน้น · sky (หยดฝน) ─────────────────────────────────────────────── */
+  --color-accent: #3FA9F5;        /* หยดหลัก · ตกแต่ง/ไล่เฉดเท่านั้น (2.56:1 บนขาว) */
+  --color-accent-strong: #2B73A7; /* sky-700 · ลิงก์/ไอคอนที่สื่อความหมาย (5.11:1 AA) */
+  --color-on-accent: #FFFFFF;     /* ตัวอักษรบน accent-strong */
+
+  --color-accent-50: #F3FAFE;
+  --color-accent-100: #E8F5FE;
+  --color-accent-200: #CDE9FC;
+  --color-accent-300: #A9D8FA;
+  --color-accent-400: #75C1F8;
+  --color-accent-500: #3FA9F5;  /* = accent */
+  --color-accent-600: #3690D0;
+  --color-accent-700: #2B73A7;  /* = accent-strong */
+  --color-accent-800: #21587F;
+  --color-accent-900: #18405D;
+
+  /* ─── พื้น / เส้น / ตัวอักษร ────────────────────────────────────────────── */
+  --color-paper: #F6FAF9;   /* พื้นหลังแอป */
+  --color-surface: #FFFFFF; /* การ์ด/แผง */
+  --color-subtle: #F0F9F6;  /* พื้น section อ่อน (= brand-50) */
+  --color-line: #DCE8E5;    /* เส้น hairline */
+  --color-ink: #0F2740;     /* หัวข้อ/ตัวอักษรหลัก (navy · 14.42:1 บน paper) */
+  --color-muted: #536477;   /* ตัวอักษรรอง (5.77:1 บน paper) */
+  --color-focus: #036647;   /* วงโฟกัส — ดูหมายเหตุ FOCUS ด้านล่าง */
+
+  /* ─── สถานะ (ต้องมีก่อนทำจอ error/สำเร็จของ B2/B3/B4) ────────────────────
+     แต่ละชุด = สี "หลัก" (ใช้เป็นตัวอักษรบนขาว และเป็นพื้นที่มีตัวอักษรขาวได้)
+                + subtle (พื้นกล่อง) + line (ขอบกล่อง) */
+  --color-danger: #B91C1C;
+  --color-danger-subtle: #FEF2F2;
+  --color-danger-line: #FECACA;
+  --color-warning: #B45309;
+  --color-warning-subtle: #FFFBEB;
+  --color-warning-line: #FDE68A;
+  --color-success: #036647;
+  --color-success-subtle: #F0F9F6;
+  --color-success-line: #BEE4D8;
+  --color-info: #2B73A7;
+  --color-info-subtle: #F3FAFE;
+  --color-info-line: #CDE9FC;
+  --color-on-status: #FFFFFF; /* ตัวอักษรบนพื้นทึบของสถานะทั้ง 4 */
+
+  /* ─── มุมโค้ง / เงา / ระยะ ──────────────────────────────────────────────── */
+  --radius-field: 0.75rem; /* ช่องกรอก/ปุ่ม (rounded-field) */
+  --radius-card: 1rem;     /* การ์ด/แผง (rounded-card) */
+  --radius-pill: 9999px;   /* ปุ่มกลม/ป้าย (rounded-pill) */
+
+  --shadow-card: 0 1px 2px rgba(15, 39, 64, 0.04), 0 8px 24px rgba(15, 39, 64, 0.06);
+  --shadow-pop: 0 8px 16px rgba(15, 39, 64, 0.08), 0 24px 48px rgba(15, 39, 64, 0.12);
+
+  --spacing-gutter: 1.25rem;  /* ระยะขอบในการ์ด/ฟอร์ม (p-gutter, gap-gutter) */
+  --spacing-section: 4rem;    /* ระยะระหว่าง section ของหน้า (py-section) */
+
+  /* ─── ขนาดตัวอักษร (ชั้นหัวเรื่องที่ใช้ซ้ำทั้งแอป) ─────────────────────── */
+  --text-display: 2.5rem;
+  --text-display--line-height: 1.15;
+  --text-title: 1.75rem;
+  --text-title--line-height: 1.25;
+  --text-section: 1.25rem;
+  --text-section--line-height: 1.35;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-inter), var(--font-thai), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-display), var(--font-thai), Georgia, serif;
+}
+
+/* ─── โหมดมืด (opt-in เท่านั้น — ดูหมายเหตุหัวไฟล์) ───────────────────────
+   พื้นอ้างอิงตามสเปก §C: surface #0F2740 · พื้นแอปเข้มกว่าหนึ่งขั้น #0B1A2E
+   ⚠️ บนพื้นมืด สีแบรนด์เป็นมิ้นต์สว่าง ⇒ ตัวอักษรบนปุ่มหลักต้องเป็น navy ไม่ใช่ขาว
+      (ทำผ่าน --color-on-brand ไม่ต้องแก้คลาสของจอ) */
+[data-theme="dark"] {
+  color-scheme: dark;
+  --background: #0B1A2E;
+  --foreground: #ECEEF0;
+
+  --color-brand: #00D49F;
+  --color-brand-light: #7FFFDC;
+  --color-brand-hover: #2EDCB0;
+  --color-brand-strong: #00D49F;
+  --color-brand-dark: #2EDCB0;
+  --color-on-brand: #0F2740;
+
+  --color-accent: #7CC9FF;
+  --color-accent-strong: #7CC9FF;
+  --color-on-accent: #0F2740;
+
+  --color-paper: #0B1A2E;
+  --color-surface: #0F2740;
+  --color-subtle: #16324F;
+  --color-line: #354A5F;
+  --color-ink: #ECEEF0;
+  --color-muted: #9FA9B3;
+  --color-focus: #00D49F;
+
+  --color-danger: #FCA5A5;
+  --color-danger-subtle: #3A1A1E;
+  --color-danger-line: #6B2B31;
+  --color-warning: #FCD34D;
+  --color-warning-subtle: #3A2E12;
+  --color-warning-line: #6B5518;
+  --color-success: #7FFFDC;
+  --color-success-subtle: #0E3A31;
+  --color-success-line: #1C6552;
+  --color-info: #7CC9FF;
+  --color-info-subtle: #12304A;
+  --color-info-line: #24557F;
+  --color-on-status: #0F2740;
+
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
+  --shadow-pop: 0 8px 16px rgba(0, 0, 0, 0.4), 0 24px 48px rgba(0, 0, 0, 0.5);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  cursor: pointer;
+}
+
+/* ─── FOCUS ─────────────────────────────────────────────────────────────────
+   🔴 จงใจไม่ตามสเปกแบรนด์ตรงจุดเดียว: สเปกเขียน `--focus:#00D49F` ให้ทั้งสองโหมด
+      แต่ #00D49F บนพื้น paper ได้แค่ **1.83:1** = ตก WCAG 2.2 SC 1.4.11 (ต้อง ≥3:1)
+      ⇒ โหมดสว่างใช้ brand-strong #036647 (6.66:1 บน paper) · โหมดมืดคง #00D49F (9.09:1)
+      บันทึกไว้ที่ audit L7-1/B0 — ถ้าจะกลับไปใช้ค่าสเปทต้องแก้สเปกพร้อมเหตุผลก่อน */
+:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   คอมโพเนนต์กลาง (.lml-*) — จอใหม่ใช้ชุดนี้ ไม่ต้องประกอบสไตล์เองใหม่ทุกจอ
+   อยู่ใน @layer components ⇒ utility ของ Tailwind ยัง override ได้ตามปกติ
+   ═══════════════════════════════════════════════════════════════════════════ */
+@layer components {
+  /* ── การ์ด/แผง ── */
+  .lml-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    padding: var(--spacing-gutter);
+    color: var(--color-ink);
+  }
+
+  .lml-divider {
+    border: 0;
+    border-top: 1px solid var(--color-line);
+    margin-block: var(--spacing-gutter);
+  }
+
+  /* ── ปุ่ม ── */
+  .lml-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 2.75rem; /* 44px — เป้าแตะขั้นต่ำบนมือถือ */
+    padding: 0.625rem 1.25rem;
+    border: 1px solid transparent;
+    border-radius: var(--radius-field);
+    font-weight: 600;
+    line-height: 1.2;
+    text-align: center;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  }
+
+  .lml-btn:disabled,
+  .lml-btn[aria-disabled="true"] {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  .lml-btn-primary {
+    background: var(--color-brand-strong);
+    color: var(--color-on-brand);
+  }
+  .lml-btn-primary:hover:not(:disabled):not([aria-disabled="true"]) {
+    background: var(--color-brand-dark);
+  }
+
+  .lml-btn-secondary {
+    background: var(--color-surface);
+    border-color: var(--color-line);
+    color: var(--color-ink);
+  }
+  .lml-btn-secondary:hover:not(:disabled):not([aria-disabled="true"]) {
+    background: var(--color-subtle);
+  }
+
+  .lml-btn-ghost {
+    background: transparent;
+    color: var(--color-brand-strong);
+  }
+  .lml-btn-ghost:hover:not(:disabled):not([aria-disabled="true"]) {
+    background: var(--color-subtle);
+  }
+
+  .lml-btn-danger {
+    background: var(--color-danger);
+    color: var(--color-on-status);
+  }
+
+  /* ── ฟอร์ม ── */
+  .lml-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+
+  .lml-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+
+  .lml-input {
+    width: 100%;
+    min-height: 2.75rem;
+    padding: 0.625rem 0.875rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-field);
+    color: var(--color-ink);
+    transition: border-color 0.15s ease;
+  }
+  .lml-input::placeholder {
+    color: var(--color-muted);
+  }
+  .lml-input:hover:not(:disabled) {
+    border-color: var(--color-brand-hover);
+  }
+  .lml-input:disabled {
+    background: var(--color-subtle);
+    cursor: not-allowed;
+  }
+  .lml-input[aria-invalid="true"] {
+    border-color: var(--color-danger);
+  }
+
+  .lml-help {
+    font-size: 0.8125rem;
+    color: var(--color-muted);
+  }
+
+  .lml-error {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-danger);
+  }
+
+  /* ── กล่องข้อความ/แบนเนอร์สถานะ ──
+     ใช้คู่กับ role="status" (info/success) หรือ role="alert" (warning/danger) เสมอ */
+  .lml-note {
+    display: flex;
+    gap: 0.625rem;
+    padding: 0.75rem 0.875rem;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-field);
+    background: var(--color-subtle);
+    color: var(--color-ink);
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+  .lml-note-info {
+    background: var(--color-info-subtle);
+    border-color: var(--color-info-line);
+  }
+  .lml-note-success {
+    background: var(--color-success-subtle);
+    border-color: var(--color-success-line);
+  }
+  .lml-note-warning {
+    background: var(--color-warning-subtle);
+    border-color: var(--color-warning-line);
+  }
+  .lml-note-danger {
+    background: var(--color-danger-subtle);
+    border-color: var(--color-danger-line);
+  }
+
+  /* ── ลิงก์ในเนื้อความ ── */
+  .lml-link {
+    color: var(--color-accent-strong);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .lml-link:hover {
+    color: var(--color-brand-strong);
+  }
+}
+
+/* ─── Scrollbar แบบบางสำหรับพื้นที่ scroll ใน Admin ─────────────── */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 8px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* ─── Entrance animations (ใช้กับ .fade-in / .animate-in ทั่วแอป) ── */
+@keyframes az-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.fade-in {
+  animation: az-fade-in 0.4s ease-out both;
+}
+.animate-in {
+  animation: az-fade-in 0.3s ease-out both;
+}
+
+/* ─── Reveal-on-scroll (คู่กับ IntersectionObserver ใน <Reveal>) ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-in,
+  .animate-in {
+    animation: none;
+  }
+  .reveal {
+    transition: none;
+    opacity: 1;
+    transform: none;
+  }
+}

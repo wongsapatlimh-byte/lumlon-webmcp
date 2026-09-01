@@ -13,7 +13,10 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "mascot:sync": "node scripts/sync-mascot.mjs",
-    "mascot:check": "node scripts/sync-mascot.mjs --check"
+    "mascot:check": "node scripts/sync-mascot.mjs --check",
+    "webmcp:scan": "node scripts/webmcp-bundle-scan.mjs",
+    "webmcp:export": "node scripts/webmcp-export.mjs",
+    "webmcp:gate": "node scripts/webmcp-release-gate.mjs"
   },
   "dependencies": {
     "@monaco-editor/react": "^4.7.0",

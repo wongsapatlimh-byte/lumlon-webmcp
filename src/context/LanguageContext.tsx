@@ -51,9 +51,23 @@ function writeStoredLang(next: LanguageType): void {
 }
 
 // สร้าง Provider Component สำหรับหุ้ม Root Layout
-export function LanguageProvider({ children }: { children: ReactNode }) {
+/**
+ * 🌐 **`initialLang` เพิ่ม 29 ส.ค. 2026 (เลน W) — ค่าปริยายยังเป็น `'TH'` เหมือนเดิมเป๊ะ**
+ *    ⇒ แอปจริงไม่เปลี่ยนพฤติกรรมแม้แต่นิดเดียว (ไม่ส่งพรอพ = ได้ของเดิมทุกอย่าง)
+ *    เหตุผลที่ต้องมี: ตัวส่งแข่ง WebMCP มีผู้อ่านเป็น **กรรมการต่างชาติ** ⇒ ค่าเริ่มต้น `'TH'`
+ *    ทำให้แถบที่บอก *วิธีเปิด WebMCP* ขึ้นภาษาไทย ⇒ คนที่ต้องอ่านมันที่สุดกลับอ่านไม่ออก
+ *    🔬 เจอตอนเปิดดูภาพจับจอของสำเนาที่ถ่ายออกไปแล้ว ⛔ ไม่ใช่จากเทส (เทสทุกตัวเขียว)
+ * 📌 ค่าที่ผู้ใช้เคยเลือกไว้ใน `localStorage` ยังชนะค่านี้เสมอ — เลือกเองแล้วต้องได้ของที่เลือก
+ */
+export function LanguageProvider({
+  children,
+  initialLang = 'TH',
+}: {
+  children: ReactNode;
+  initialLang?: LanguageType;
+}) {
   // เก็บภาษาเริ่มต้นที่ TH
-  const [lang, setLangState] = useState<LanguageType>('TH');
+  const [lang, setLangState] = useState<LanguageType>(initialLang);
 
   // ฟังก์ชันสำหรับเปลี่ยนภาษา
   const setLang = (newLang: LanguageType) => {
